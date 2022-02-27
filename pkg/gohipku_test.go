@@ -26,8 +26,8 @@ func TestPorabilityIPv6(t *testing.T) {
 	testPortability(t, ipv6Set)
 }
 
-func testPortability(t *testing.T, ip_hipku map[string]string) {
-	for ip, hipku := range ip_hipku {
+func testPortability(t *testing.T, hipkuIP map[string]string) {
+	for ip, hipku := range hipkuIP {
 		ip := net.ParseIP(ip)
 		assert.NotNil(t, ip)
 

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ErrInvalidAddr = fmt.Errorf("invalid address")
+	ErrInvalidAddr = fmt.Errorf("invalid address") // user error
 )
 
 // func (index indexesT) index(k []string) {
