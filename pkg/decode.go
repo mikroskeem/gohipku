@@ -78,13 +78,17 @@ func Decode(hipku string) (net.IP, error) {
 	}
 	switch len(factors) {
 	case 8:
-		// ipv4 beans
-	case 16:
+		var i4 []byte
+		for n := 0; n < 8; n = n + 2 {
+			octet := factors[n]*16 + factors[n+1]
+			i4 = append(i4, byte(octet))
+		}
+		return net.IPv4(i4[0], i4[1], i4[2], i4[3]), nil
+
+	case 16: // IPv6
 		var f16 [16]byte
 		copy(f16[:], factors[0:16])
-		return net.ParseIP(
-			netaddr.IPFrom16(f16).String(),
-		), nil
+		return netaddr.IPFrom16(f16).IPAddr().IP, nil
 	}
 	return nil, fmt.Errorf("this should be impossible‽")
 }

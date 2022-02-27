@@ -12,7 +12,7 @@ func TestHipku4(t *testing.T) {
 		"eats in the ancient grasslands.\n" +
 		"Autumn colors grow.\n")
 	assert.Nil(t, err)
-	assert.Equal(t, "idk 193.4.5.6", ip)
+	assert.Equal(t, net.ParseIP("193.4.5.6"), ip)
 }
 
 func TestHipku6(t *testing.T) {
