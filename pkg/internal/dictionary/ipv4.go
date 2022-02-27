@@ -116,6 +116,7 @@ var NatureNouns = []string{
 	"wetlands",
 }
 
+var MaxLen = 4
 var PlantNouns = []string{
 	"autumn colors",
 	"cherry blossoms",
