@@ -2,7 +2,7 @@ package dictionary
 
 // IPv6 dictionaries
 
-var adjectives = []string{
+var Adjectives = []string{
 	"ace",
 	"apt",
 	"arched",
@@ -261,7 +261,7 @@ var adjectives = []string{
 	"young",
 }
 
-var nouns = []string{
+var Nouns = []string{
 	"ants",
 	"apes",
 	"asps",
@@ -520,7 +520,7 @@ var nouns = []string{
 	"yaks",
 }
 
-var verbs = []string{
+var Verbs = []string{
 	"aid",
 	"arm",
 	"awe",

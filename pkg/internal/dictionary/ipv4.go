@@ -2,7 +2,7 @@ package dictionary
 
 // IPv4 dictionaries
 
-var animalAdjectives = []string{
+var AnimalAdjectives = []string{
 	"agile",
 	"bashful",
 	"clever",
@@ -21,7 +21,7 @@ var animalAdjectives = []string{
 	"weary",
 }
 
-var animalColors = []string{
+var AnimalColors = []string{
 	"beige",
 	"black",
 	"blue",
@@ -40,7 +40,7 @@ var animalColors = []string{
 	"white",
 }
 
-var animalNouns = []string{
+var AnimalNouns = []string{
 	"ape",
 	"bear",
 	"crow",
@@ -59,7 +59,7 @@ var animalNouns = []string{
 	"wolf",
 }
 
-var animalVerbs = []string{
+var AnimalVerbs = []string{
 	"aches",
 	"basks",
 	"cries",
@@ -78,7 +78,7 @@ var animalVerbs = []string{
 	"yawns",
 }
 
-var natureAdjectives = []string{
+var NatureAdjectives = []string{
 	"ancient",
 	"barren",
 	"blazing",
@@ -97,7 +97,7 @@ var natureAdjectives = []string{
 	"wind-swept",
 }
 
-var natureNouns = []string{
+var NatureNouns = []string{
 	"canyon",
 	"clearing",
 	"desert",
@@ -116,7 +116,7 @@ var natureNouns = []string{
 	"wetlands",
 }
 
-var plantNouns = []string{
+var PlantNouns = []string{
 	"autumn colors",
 	"cherry blossoms",
 	"chrysanthemums",
@@ -135,7 +135,7 @@ var plantNouns = []string{
 	"yellowwood leaves",
 }
 
-var plantVerbs = []string{
+var PlantVerbs = []string{
 	"blow",
 	"crunch",
 	"dance",
