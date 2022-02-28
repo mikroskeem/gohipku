@@ -8,6 +8,7 @@ func capitalize(s string) string {
 	return strings.ToUpper(string(s[0])) + s[1:]
 }
 
+// 1.17 doesn't go generics; also this code wouldn't work on 1.18
 // type indexedSlice[T comparable] map[T]int
 
 // func indexSlice[T comparable](slice []T) (index indexedSlice) {
