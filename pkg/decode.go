@@ -84,7 +84,7 @@ typ:
 		for n := 1; n <= t.MaxLen; n++ {
 			nword, ok := safeSliceIndexGenericStr(&words, wordsIndex)
 			if !ok {
-				return nil, fmt.Errorf("ran out of words to decode for %d-%q:%d: %w", i, t.MapName, n, ErrInvalidAddr)
+				return nil, fmt.Errorf("ran out of words to decode for %d-%q:%d/%d: %w", i, t.MapName, n, t.MaxLen, ErrInvalidAddr)
 			}
 			if n != 1 {
 				buffer += " "
