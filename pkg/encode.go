@@ -36,25 +36,39 @@ func encodeIPv4(ip netaddr.IP) string {
 		factored[i] = (b - factored[i+1]) / 16
 	}
 
-	var words [8]string
-	for i, b := range factored {
-		words[i] = dict.Hipku4[i][b]
-	}
+	words := encodeByKey(factored[:], dict.Hipku4)
 
-	return "The " + strings.Join(words[0:3], " ") + "\n" +
-		words[3] + " in the " + strings.Join(words[4:6], " ") + ".\n" +
-		capitalize(words[6]) + " " + strings.Join(words[7:8], " ") + ".\n"
+	words[0] = capitalize(words[0])
+	words[9] = capitalize(words[9])
+
+	return strings.Join(words[0:4], " ") + "\n" +
+		strings.Join(words[4:9], " ") + ".\n" +
+		strings.Join(words[9:], " ") + ".\n"
 }
 
 // assumes IPv6 is already validated
 func encodeIPv6(ip netaddr.IP) string {
 	ipb := ip.As16()
-	var words [16]string
-	for i, b := range ipb {
-		words[i] = dict.Hipku6[i][b]
-	}
 
-	return capitalize(words[0]) + " " + words[1] + " and " + strings.Join(words[2:4], " ") + "\n" +
-		strings.Join(words[4:11], " ") + ".\n" +
-		capitalize(words[11]) + " " + strings.Join(words[12:16], " ") + ".\n"
+	words := encodeByKey(ipb[:], dict.Hipku6)
+
+	words[0] = capitalize(words[0])
+	words[12] = capitalize(words[12])
+
+	return strings.Join(words[0:5], " ") + "\n" +
+		strings.Join(words[5:12], " ") + ".\n" +
+		strings.Join(words[12:], " ") + ".\n"
+}
+
+func encodeByKey(ipb []byte, key []dict.DictObj) (words []string) {
+	var ipbPos int
+	for _, t := range key {
+		if t.Dict == nil {
+			words = append(words, t.MapName)
+			continue
+		}
+		words = append(words, t.Dict[ipb[ipbPos]])
+		ipbPos++
+	}
+	return
 }

@@ -2,7 +2,7 @@ package dictionary
 
 // IPv6 dictionaries
 
-var Adjectives = []string{
+var Adjectives = DictObj{"Adjectives", 1, []string{
 	"ace",
 	"apt",
 	"arched",
@@ -259,9 +259,9 @@ var Adjectives = []string{
 	"wrong",
 	"wry",
 	"young",
-}
+}}
 
-var Nouns = []string{
+var Nouns = DictObj{"Nouns", 1, []string{
 	"ants",
 	"apes",
 	"asps",
@@ -518,9 +518,9 @@ var Nouns = []string{
 	"wraiths",
 	"wrens",
 	"yaks",
-}
+}}
 
-var Verbs = []string{
+var Verbs = DictObj{"Verbs", 1, []string{
 	"aid",
 	"arm",
 	"awe",
@@ -777,4 +777,4 @@ var Verbs = []string{
 	"taunt",
 	"teach",
 	"tend",
-}
+}}

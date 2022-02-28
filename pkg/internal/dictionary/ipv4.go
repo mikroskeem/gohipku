@@ -2,7 +2,7 @@ package dictionary
 
 // IPv4 dictionaries
 
-var AnimalAdjectives = []string{
+var AnimalAdjectives = DictObj{"AnimalAdjectives", 1, []string{
 	"agile",
 	"bashful",
 	"clever",
@@ -19,9 +19,9 @@ var AnimalAdjectives = []string{
 	"thoughtful",
 	"vapid",
 	"weary",
-}
+}}
 
-var AnimalColors = []string{
+var AnimalColors = DictObj{"AnimalColors", 1, []string{
 	"beige",
 	"black",
 	"blue",
@@ -38,9 +38,9 @@ var AnimalColors = []string{
 	"pink",
 	"red",
 	"white",
-}
+}}
 
-var AnimalNouns = []string{
+var AnimalNouns = DictObj{"AnimalNouns", 1, []string{
 	"ape",
 	"bear",
 	"crow",
@@ -57,9 +57,9 @@ var AnimalNouns = []string{
 	"snake",
 	"toad",
 	"wolf",
-}
+}}
 
-var AnimalVerbs = []string{
+var AnimalVerbs = DictObj{"AnimalVerbs", 1, []string{
 	"aches",
 	"basks",
 	"cries",
@@ -76,9 +76,9 @@ var AnimalVerbs = []string{
 	"thrives",
 	"wakes",
 	"yawns",
-}
+}}
 
-var NatureAdjectives = []string{
+var NatureAdjectives = DictObj{"NatureAdjectives", 1, []string{
 	"ancient",
 	"barren",
 	"blazing",
@@ -95,9 +95,9 @@ var NatureAdjectives = []string{
 	"serene",
 	"sunlit",
 	"wind-swept",
-}
+}}
 
-var NatureNouns = []string{
+var NatureNouns = DictObj{"NatureNouns", 1, []string{
 	"canyon",
 	"clearing",
 	"desert",
@@ -114,10 +114,9 @@ var NatureNouns = []string{
 	"tundra",
 	"valley",
 	"wetlands",
-}
+}}
 
-var MaxLen = 4
-var PlantNouns = []string{
+var PlantNouns = DictObj{"PlantNouns", 4, []string{
 	"autumn colors",
 	"cherry blossoms",
 	"chrysanthemums",
@@ -134,9 +133,9 @@ var PlantNouns = []string{
 	"water lillies",
 	"willow branches",
 	"yellowwood leaves",
-}
+}}
 
-var PlantVerbs = []string{
+var PlantVerbs = DictObj{"PlantVerbs", 1, []string{
 	"blow",
 	"crunch",
 	"dance",
@@ -153,4 +152,4 @@ var PlantVerbs = []string{
 	"sway",
 	"turn",
 	"twist",
-}
+}}

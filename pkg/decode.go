@@ -13,50 +13,16 @@ var (
 	ErrInvalidAddr = fmt.Errorf("invalid address") // user error
 )
 
-// func (index indexesT) index(k []string) {
-// 	s := reflect.ValueOf(k).Type().Name()
-// 	if _, ok := index[s]; !ok {
-// 		index[s] = createStringSliceIndex(k)
-// 	}
-// }
+var indexes = generateIndexes()
 
-type indexesT map[string]indexedStringSlice
-
-var indexes = make(indexesT)
-
-func init() {
-	// let's give up after an hour and hope it is not kept as such for 10 years
-	indexes["Adjectives"] = createStringSliceIndex(dict.Adjectives)
-	indexes["Nouns"] = createStringSliceIndex(dict.Nouns)
-	indexes["Verbs"] = createStringSliceIndex(dict.Verbs)
-	indexes["AnimalAdjectives"] = createStringSliceIndex(dict.AnimalAdjectives)
-	indexes["AnimalColors"] = createStringSliceIndex(dict.AnimalColors)
-	indexes["AnimalNouns"] = createStringSliceIndex(dict.AnimalNouns)
-	indexes["AnimalVerbs"] = createStringSliceIndex(dict.AnimalVerbs)
-	indexes["NatureAdjectives"] = createStringSliceIndex(dict.NatureAdjectives)
-	indexes["NatureNouns"] = createStringSliceIndex(dict.NatureNouns)
-	indexes["PlantNouns"] = createStringSliceIndex(dict.PlantNouns)
-	indexes["PlantVerbs"] = createStringSliceIndex(dict.PlantVerbs)
-
-	// gimmeGenerics := func(index indexesT, k []string) {
-	// 	s := reflect.ValueOf(k).String()
-	// 	if _, ok := index[s]; !ok {
-	// 		index[s] = createStringSliceIndex(k)
-	// 	}
-	// }
-	// for i, _ := range dict.Hipku4 {
-	// 	s := reflect.TypeOf(dict.Hipku4).FieldByIndex([]int{i})
-	// 	fmt.Print(s)
-	// 	// if _, ok := indexes[s]; !ok {
-	// 	// 	indexes[s] = createStringSliceIndex(k)
-	// 	// }
-	// 	// indexes.index(k)
-	// 	// gimmeGenerics(indexes, k)
-	// }
-	// for _, k := range dict.Hipku6 {
-	// 	indexes.index(k)
-	// 	// gimmeGenerics(indexes, k)
-	// }
+func generateIndexes() map[string]indexedStringSlice {
+	ixs := make(map[string]indexedStringSlice)
+	for _, d := range append(dict.Hipku4, dict.Hipku6...) {
+		if _, indexed := ixs[d.MapName]; !indexed {
+			ixs[d.MapName] = createStringSliceIndex(d.Dict)
+		}
+	}
+	return ixs
 }
 
 // Decodes from hipku to an IPv4 or IPv6 address.
@@ -72,10 +38,12 @@ func Decode(hipku string) (net.IP, error) {
 			h = append(h, x)
 		}
 	}
+
 	factors, err := deocdeToFactors(h)
 	if err != nil {
 		return nil, err
 	}
+
 	switch len(factors) {
 	case 8:
 		var i4 []byte
@@ -90,60 +58,54 @@ func Decode(hipku string) (net.IP, error) {
 		copy(f16[:], factors[0:16])
 		return netaddr.IPFrom16(f16).IPAddr().IP, nil
 	}
+
 	return nil, fmt.Errorf("this should be impossible‽")
 }
 
 func deocdeToFactors(words []string) (factors []byte, _ error) {
-	// everything on from here is just plain ugly
-	var inputWordIndex = -1 // for lookahead of words, -1 for 1st loop
-	// can't use len(h) since the dictionary uses multiple words inside a word :(
-	var typ []string
+	var wordsIndex int // for lookahead of words; indicates nth in var words
+
+	var typ []dict.DictObj
 	if strings.EqualFold(words[0], "The") {
-		typ = dict.Hipku4String // IPv4?
+		typ = dict.Hipku4 // IPv4?
 	} else {
-		typ = dict.Hipku6String
+		typ = dict.Hipku6 // IPv6?
 	}
+
+typ:
 	for i, t := range typ { // have to duplicate the whole codeblock since no generics
-		inputWordIndex++
-		switch t {
-		default:
-			input, ok := safeSliceIndexGenericStr(&words, inputWordIndex)
-			if !ok {
-				return nil, fmt.Errorf("ran out of words to decode for %d-%q: %w", i, t, ErrInvalidAddr)
-			}
-			pos := indexes[t].getIndex(input)
-			if pos < 0 {
-				return nil, fmt.Errorf("hipku word %q is not of %q: %w", input, t, ErrInvalidAddr)
-			}
-			factors = append(factors, byte(pos))
-
-		case "": // non-data word
-
-		case "PlantNouns":
-			var pos int
-			suckedInput := words[inputWordIndex]
-			for l := 1; l < dict.MaxLen; l++ {
-				pos = indexes[t].getIndex(suckedInput)
-				if pos >= 0 {
-					break // match found
-				}
-
-				next, ok := safeSliceIndexGenericStr(&words, inputWordIndex+l)
-				if !ok {
-					return nil, fmt.Errorf("ran out of words to decode %d-%q: %w", i, t, ErrInvalidAddr)
-				}
-				suckedInput += " " + next
-				inputWordIndex++
-			}
-			if pos < 0 { // if exited before match
-				return nil, fmt.Errorf("hipku word %q is not of %q: %w", suckedInput, t, ErrInvalidAddr)
-			}
-			factors = append(factors, byte(pos))
+		if t.Dict == nil {
+			wordsIndex++
+			continue // non-data word
 		}
-	}
-	if inputWordIndex+1 != len(words) {
-		return nil, fmt.Errorf("decoded all words, but left with %d extra: %w", len(words)-inputWordIndex+1, ErrInvalidAddr)
+
+		var factor int    // see: after for {}
+		var buffer string // for potential lookahead, where MaxLen > 1
+		for n := 1; n <= t.MaxLen; n++ {
+			nword, ok := safeSliceIndexGenericStr(&words, wordsIndex)
+			if !ok {
+				return nil, fmt.Errorf("ran out of words to decode for %d-%q:%d: %w", i, t.MapName, n, ErrInvalidAddr)
+			}
+			if n != 1 {
+				buffer += " "
+			}
+			buffer += nword
+			wordsIndex++
+
+			factor = indexes[t.MapName].getIndex(buffer)
+			if factor >= 0 {
+				factors = append(factors, byte(factor))
+				continue typ
+			}
+		}
+
+		// no match found
+		return nil, fmt.Errorf("hipku word %q is not of %q: %w", buffer, t, ErrInvalidAddr)
 	}
 
-	return
+	if wordsIndex != len(words) {
+		return nil, fmt.Errorf("decoded all words, ended with %d extra (%q): %w", len(words)-wordsIndex, words[wordsIndex:], ErrInvalidAddr)
+	}
+
+	return // factors, nil
 }
