@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	dict "github.com/mikroskeem/gohipku/pkg/internal/dictionary"
-	"inet.af/netaddr"
 )
 
 var (
@@ -45,7 +44,7 @@ func Decode(hipku string) (net.IP, error) {
 	}
 
 	switch len(factors) {
-	case 8:
+	case 8: // IPv4
 		var i4 []byte
 		for n := 0; n < 8; n = n + 2 {
 			octet := factors[n]*16 + factors[n+1]
@@ -54,9 +53,7 @@ func Decode(hipku string) (net.IP, error) {
 		return net.IPv4(i4[0], i4[1], i4[2], i4[3]), nil
 
 	case 16: // IPv6
-		var f16 [16]byte
-		copy(f16[:], factors[0:16])
-		return netaddr.IPFrom16(f16).IPAddr().IP, nil
+		return net.IP(factors[0:16]), nil
 	}
 
 	return nil, fmt.Errorf("this should be impossible‽")
@@ -66,10 +63,10 @@ func deocdeToFactors(words []string) (factors []byte, _ error) {
 	var wordsIndex int // for lookahead of words; indicates nth in var words
 
 	var typ []dict.DictObj
-	if strings.EqualFold(words[0], "The") {
-		typ = dict.Hipku4 // IPv4?
-	} else {
-		typ = dict.Hipku6 // IPv6?
+	if strings.EqualFold(words[0], "The") { // IPv4?
+		typ = dict.Hipku4
+	} else { // IPv6?
+		typ = dict.Hipku6
 	}
 
 typ:
@@ -107,5 +104,5 @@ typ:
 		return nil, fmt.Errorf("decoded all words, ended with %d extra (%q): %w", len(words)-wordsIndex, words[wordsIndex:], ErrInvalidAddr)
 	}
 
-	return // factors, nil
+	return factors, nil
 }

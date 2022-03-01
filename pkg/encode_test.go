@@ -1,16 +1,15 @@
 package gohipku
 
 import (
+	"net"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"inet.af/netaddr"
 )
 
 func TestIPv4(t *testing.T) {
-	ip, err := netaddr.ParseIP("193.4.5.6") // lo: 0xffff00000000..0xffffffffffff
+	ip := net.ParseIP("193.4.5.6") // lo: 0xffff00000000..0xffffffffffff
 	assert.NotNil(t, ip)
-	assert.Nil(t, err)
 
 	assert.Equal(t, "The silent black ape\n"+
 		"eats in the ancient grasslands.\n"+
@@ -19,9 +18,8 @@ func TestIPv4(t *testing.T) {
 }
 
 func TestIPv6(t *testing.T) {
-	ip, err := netaddr.ParseIP("67d1:8f17:b5a9:dbee:89d4:42a6:7154:4f69")
+	ip := net.ParseIP("67d1:8f17:b5a9:dbee:89d4:42a6:7154:4f69")
 	assert.NotNil(t, ip)
-	assert.Nil(t, err)
 
 	assert.Equal(t, "Last sprouts and plain boys\n"+
 		"pelt rushed suave torn pale stiff drakes.\n"+
