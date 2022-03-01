@@ -19,10 +19,10 @@ var ipv6Set = map[string]string{
 	"ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff": "Young yaks and young yaks\ntend young young young young young yaks.\nYoung yaks tend young yaks.\n",
 }
 
-func TestPorabilityIPv4(t *testing.T) {
+func TestPortabilityIPv4(t *testing.T) {
 	testPortability(t, ipv4Set)
 }
-func TestPorabilityIPv6(t *testing.T) {
+func TestPortabilityIPv6(t *testing.T) {
 	testPortability(t, ipv6Set)
 }
 
