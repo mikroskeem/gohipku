@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	dict "github.com/mikroskeem/gohipku/pkg/internal/dictionary"
-	"inet.af/netaddr"
 )
 
 var (
@@ -54,9 +53,7 @@ func Decode(hipku string) (net.IP, error) {
 		return net.IPv4(i4[0], i4[1], i4[2], i4[3]), nil
 
 	case 16: // IPv6
-		var f16 [16]byte
-		copy(f16[:], factors[0:16])
-		return netaddr.IPFrom16(f16).IPAddr().IP, nil
+		return net.IP(factors[0:16]), nil
 	}
 
 	return nil, fmt.Errorf("this should be impossible‽")
