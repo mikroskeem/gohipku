@@ -10,21 +10,20 @@ import (
 // Encodes an IPv4 or IPv6 address as hipku.
 //
 // scoped addressing zones on ipv6 is lost on encode (::0%ens18 ← ens18 is lost)
-func Encode(ip net.IP) (value string, ok bool) {
+func Encode(ip net.IP) (hipku string, ok bool) {
 	if ip == nil {
-		return
+		return "", false
 	}
 
-	if v4 := ip.To4(); v4 == nil {
-		return encodeIPv6(ip), true
-	} else {
+	if v4 := ip.To4(); v4 != nil {
 		return encodeIPv4(v4), true
 	}
+	return encodeIPv6(ip), true
 }
 
 // assumes IPv4 is already validated
 func encodeIPv4(ip net.IP) string {
-	ipb := []byte(ip)
+	ipb := ip
 	if len(ipb) == 16 {
 		ipb = ip[12:16]
 	}
@@ -49,7 +48,7 @@ func encodeIPv4(ip net.IP) string {
 // assumes IPv6 is already validated
 func encodeIPv6(ip net.IP) string {
 	if len(ip) != 16 {
-		panic("ip len is not 16")
+		panic("not IPv6‽ len(ip) is not 16")
 	}
 
 	words := encodeByKey(ip, dict.Hipku6)
