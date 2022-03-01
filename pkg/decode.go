@@ -8,9 +8,7 @@ import (
 	dict "github.com/mikroskeem/gohipku/pkg/internal/dictionary"
 )
 
-var (
-	ErrInvalidAddr = fmt.Errorf("invalid address") // user error
-)
+var ErrInvalidAddr = fmt.Errorf("invalid address") // user error
 
 var indexes = generateIndexes()
 
@@ -31,6 +29,7 @@ func Decode(hipku string) (net.IP, error) {
 	hipku = strings.ReplaceAll(hipku, ".", "")
 	hipku = strings.ToLower(hipku)
 	hraw := strings.Fields(hipku)
+
 	var h []string
 	for _, x := range hraw { // 2 whitespaces would create an empty 'word'
 		if x != "" {
@@ -46,9 +45,9 @@ func Decode(hipku string) (net.IP, error) {
 	switch len(factors) {
 	case 8: // IPv4
 		var i4 []byte
-		for n := 0; n < 8; n = n + 2 {
+		for n := 0; n < 8; n += 2 {
 			octet := factors[n]*16 + factors[n+1]
-			i4 = append(i4, byte(octet))
+			i4 = append(i4, octet)
 		}
 		return net.IPv4(i4[0], i4[1], i4[2], i4[3]), nil
 
@@ -101,7 +100,8 @@ typ:
 	}
 
 	if wordsIndex != len(words) {
-		return nil, fmt.Errorf("decoded all words, ended with %d extra (%q): %w", len(words)-wordsIndex, words[wordsIndex:], ErrInvalidAddr)
+		return nil, fmt.Errorf("decoded all words, ended with %d extra (%q): %w",
+			len(words)-wordsIndex, words[wordsIndex:], ErrInvalidAddr)
 	}
 
 	return factors, nil

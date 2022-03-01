@@ -6,9 +6,12 @@ type DictObj struct {
 	Dict    []string
 }
 
-var the = DictObj{MapName: "the"}
-var in = DictObj{MapName: "in"}
-var and = DictObj{MapName: "and"}
+// non-data words
+var (
+	the = DictObj{MapName: "the"}
+	in  = DictObj{MapName: "in"}
+	and = DictObj{MapName: "and"}
+)
 
 var Hipku4 = []DictObj{
 	the,

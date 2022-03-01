@@ -8,6 +8,7 @@ import (
 )
 
 func TestHipku4(t *testing.T) {
+	t.Parallel()
 	ip, err := Decode("The silent black ape\n" +
 		"eats in the ancient grasslands.\n" +
 		"Autumn colors grow.\n")
@@ -16,6 +17,7 @@ func TestHipku4(t *testing.T) {
 }
 
 func TestHipku6(t *testing.T) {
+	t.Parallel()
 	ip, err := Decode("Last sprouts and plain boys\n" +
 		"pelt rushed suave torn pale stiff drakes.\n" +
 		"Ripe heads drip good grooms.\n")
@@ -24,42 +26,61 @@ func TestHipku6(t *testing.T) {
 }
 
 func TestErrCutShort(t *testing.T) {
+	t.Parallel()
 	expected := "ran out of words to decode"
 
-	_, err := Decode("The silent black ape\n")
-	// https://github.com/stretchr/testify/issues/497
-	assert.ErrorIs(t, err, ErrInvalidAddr)
-	assert.Contains(t, err.Error(), expected)
+	t.Run("simple", func(t *testing.T) {
+		t.Parallel()
+		_, err := Decode("The silent black ape\n")
+		// https://github.com/stretchr/testify/issues/497
+		assert.ErrorIs(t, err, ErrInvalidAddr)
+		assert.Contains(t, err.Error(), expected)
+	})
 
-	_, err = Decode("The silent black ape\n" +
-		"eats in the ancient grasslands.\n" +
-		"Autumn") // cut short; "autumn colors" is regarded as a single word
-	assert.ErrorIs(t, err, ErrInvalidAddr)
-	assert.Contains(t, err.Error(), expected)
+	t.Run("multiword", func(t *testing.T) {
+		t.Parallel()
+		_, err := Decode("The silent black ape\n" +
+			"eats in the ancient grasslands.\n" +
+			"Autumn") // cut short; "autumn colors" is regarded as a single word
+		assert.ErrorIs(t, err, ErrInvalidAddr)
+		assert.Contains(t, err.Error(), expected)
+	})
 
-	_, err = Decode("The silent black ape\n" +
-		"eats in the ancient grasslands.\n" +
-		"Autumn grow tall.\n") // "autumn colors" is regarded as a single word
-	assert.ErrorIs(t, err, ErrInvalidAddr)
-	assert.Contains(t, err.Error(), expected) // even though grow and tall are valid,
-	// the last line is taken as a single PlantNouns word (with maxLen 4); error nevertheless
+	t.Run("multiword eater", func(t *testing.T) {
+		t.Parallel()
+		_, err := Decode("The silent black ape\n" +
+			"eats in the ancient grasslands.\n" +
+			"Autumn grow tall.\n") // "autumn colors" is regarded as a single word
+		assert.ErrorIs(t, err, ErrInvalidAddr)
+		assert.Contains(t, err.Error(), expected) // even though grow and tall are valid,
+		// the last line is taken as a single PlantNouns word (with maxLen 4); error nevertheless
+	})
 }
 
 func TestErrUnknownWord(t *testing.T) {
-	_, err := Decode("The silent black ape\n" +
-		"eats in the turtle grasslands.\n" + // turtle
-		"Autumn colors grow.\n")
-	assert.ErrorIs(t, err, ErrInvalidAddr)
-	assert.Contains(t, err.Error(), "is not of")
+	t.Parallel()
 
-	_, err = Decode("The silent black ape\n" +
-		"eats in the ancient grasslands.\n" +
-		"Autumn foo bar baz grow tall.\n") // "autumn colors" is regarded as a single word
-	assert.ErrorIs(t, err, ErrInvalidAddr)
-	assert.Contains(t, err.Error(), "is not of")
+	t.Run("simple", func(t *testing.T) {
+		t.Parallel()
+		_, err := Decode("The silent black ape\n" +
+			"eats in the turtle grasslands.\n" + // turtle
+			"Autumn colors grow.\n")
+		assert.ErrorIs(t, err, ErrInvalidAddr)
+		assert.Contains(t, err.Error(), "is not of")
+	})
+
+	t.Run("multiword", func(t *testing.T) {
+		t.Parallel()
+		_, err := Decode("The silent black ape\n" +
+			"eats in the ancient grasslands.\n" +
+			"Autumn foo bar baz grow tall.\n") // "autumn colors" is regarded as a single word
+		assert.ErrorIs(t, err, ErrInvalidAddr)
+		assert.Contains(t, err.Error(), "is not of")
+	})
 }
 
 func TestErrExtraWords(t *testing.T) {
+	t.Parallel()
 	_, err := Decode("The silent black ape\n" +
 		"eats in the ancient grasslands.\n" +
 		"Autumn colors grow tall.\n") // tall
