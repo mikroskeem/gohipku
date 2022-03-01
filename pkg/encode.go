@@ -47,10 +47,6 @@ func encodeIPv4(ip net.IP) string {
 
 // assumes IPv6 is already validated
 func encodeIPv6(ip net.IP) string {
-	if len(ip) != 16 {
-		panic("not IPv6‽ len(ip) is not 16")
-	}
-
 	words := encodeByKey(ip, dict.Hipku6)
 
 	words[0] = capitalize(words[0])
