@@ -12,17 +12,17 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name: "hipku",
+		Name:  "hipku",
 		Usage: "Encode & decode IP address to/from haiku",
 		Commands: []*cli.Command{
 			{
-				Name: "encode",
-				Usage: "Encode IP to haiku",
+				Name:   "encode",
+				Usage:  "Encode IP to haiku",
 				Action: encode,
 			},
 			{
-				Name: "decode",
-				Usage: "Decode IP from haiku",
+				Name:   "decode",
+				Usage:  "Decode IP from haiku",
 				Action: decode,
 			},
 		},
